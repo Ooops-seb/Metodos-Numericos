@@ -3,6 +3,7 @@ import tkinter.messagebox as msg
 from tkinter import *
 import numpy as np
 import pyautogui as screen
+import GaussSeidel as gauss
 
 ##FUNCIONES DEL ARCHIVO
 def main():
@@ -42,10 +43,10 @@ def generate_graphics():
     Frm_MatrizX.place(x=404, y=100)
     Frm_Resultados = tk.Frame(Frm_Principal)
     Frm_Resultados.configure(width=70, height=190, bg='#cc3917')
-    Frm_Resultados.place(x=605, y=174)
+    Frm_Resultados.place(x=603, y=144)
     Frm_Parametros = tk.Frame(Frm_Principal)
-    Frm_Parametros.configure(width=200, height=80, bg="#FFFFFF")
-    Frm_Parametros.place(x=544, y=53)
+    Frm_Parametros.configure(width=200, height=45, bg="#FFFFFF")
+    Frm_Parametros.place(x=540, y=44)
 
     #Matriz de coeficientes
 
@@ -98,13 +99,9 @@ def generate_graphics():
     txt_a44 = tk.Entry(Frm_MatrizA)
     txt_a44.configure(font=("Inter",12), fg="black", bg="white")
     txt_a44.place(x=224, y=208, width=32, height=32)
-    txt_max_iter = tk.Entry(Frm_Parametros)
-    txt_max_iter.configure(font=("Inter",10), fg="black", bg="#D9D9D9")
-    txt_max_iter.place(x=150, y=13, width=40, height=20)
-    txt_max_iter.setvar()
     txt_tolerancia = tk.Entry(Frm_Parametros)
     txt_tolerancia.configure(font=("Inter",10), fg="black", bg="#D9D9D9")
-    txt_tolerancia.place(x=150, y=46, width=40, height=20)
+    txt_tolerancia.place(x=148, y=13, width=40, height=20)
 
     #Terminos independientes
     txt_x1 = tk.Entry(Frm_MatrizX)
@@ -149,7 +146,7 @@ def generate_graphics():
     lbl_equal.place(x=476, y=229)
     lbl_resultado = tk.Label(Frm_Principal)
     lbl_resultado.configure(text="Resultados:", font=("Inter",12, "bold"), fg="black", bg="#f9fadc")
-    lbl_resultado.place(x=595, y=141)
+    lbl_resultado.place(x=593, y=100)
     lbl_terminos = tk.Label(Frm_Principal)
     lbl_terminos.configure(text="Términos\nindependientes:", font=("Inter",12, "bold"), fg="black", bg="#f9fadc")
     lbl_terminos.place(x=368, y=44)
@@ -158,13 +155,16 @@ def generate_graphics():
     lbl_axb.place(x=317, y=408)
     lbl_parametros = tk.Label(Frm_Principal)
     lbl_parametros.configure(text="Parámetros:",font=("Inter",16, "bold"), fg="black", bg="#F9FADC")
-    lbl_parametros.place(x=592, y=20)
-    lbl_max_iter = tk.Label(Frm_Parametros)
-    lbl_max_iter.configure(text="Máximo iteraciones:",font=("Inter",10, "bold"), fg="black", bg="#FFFFFF")
-    lbl_max_iter.place(x=10, y=14)
+    lbl_parametros.place(x=580, y=10)
     lbl_tolerancia = tk.Label(Frm_Parametros)
     lbl_tolerancia.configure(text="Tolerancia:",font=("Inter",10, "bold"), fg="black", bg="#FFFFFF")
-    lbl_tolerancia.place(x=10, y=48)
+    lbl_tolerancia.place(x=11, y=15)
+    lbl_status = tk.Label(Frm_Principal)
+    lbl_status.configure(text="Status:", font=("Inter",10, "bold"), fg="black", bg="#F9FADC")
+    lbl_status.place(x=546, y=352)
+    lbl_status_resultado = tk.Label(Frm_Principal)
+    lbl_status_resultado.configure(font=("Inter",10, "bold"), fg="black", bg="#F9FADC")
+    lbl_status_resultado.place(x=616, y=352)
 
     #Botones
     btn_Calcular = tk.Button(Frm_Principal)
@@ -179,13 +179,34 @@ def generate_graphics():
     btn_Interpolacion = tk.Button(Frm_Menu)
     btn_Interpolacion.configure(text="Interpolacion", font=("Inter",10, "bold"), fg="white", bg='#205225', relief="ridge", bd=1)
     btn_Interpolacion.place(x=125, y=0, width=125, height=25)
+    btn_Caso1 = tk.Button(Frm_Principal)
+    btn_Caso1.configure(text="Caso 1", font=("Inter",10, "bold"), fg="white", bg='#2b2823')
+    btn_Caso1.place(x=13, y=12, width=67, height=23)
+    btn_Caso2 = tk.Button(Frm_Principal)
+    btn_Caso2.configure(text="Caso 2", font=("Inter",10, "bold"), fg="white", bg='#2b2823')
+    btn_Caso2.place(x=89, y=12, width=67, height=23)
+    btn_Caso3 = tk.Button(Frm_Principal)
+    btn_Caso3.configure(text="Caso 3", font=("Inter",10, "bold"), fg="white", bg='#2b2823')
+    btn_Caso3.place(x=165, y=12, width=67, height=23)
+    btn_Caso4 = tk.Button(Frm_Principal)
+    btn_Caso4.configure(text="Caso 4", font=("Inter",10, "bold"), fg="white", bg='#2b2823')
+    btn_Caso4.place(x=241, y=12, width=67, height=23)
 
     #Iniciar funcionalidades
+    A_caso1 = gauss.A_caso1
+    b_caso1 = gauss.b_caso1
+    A_caso2 = gauss.A_caso2
+    b_caso2 = gauss.b_caso2
+    A_caso3 = gauss.A_caso3
+    b_caso3 = gauss.b_caso3
+    A_caso4 = gauss.A_caso4
+    b_caso4 = gauss.b_caso4
+
     tolerancia = 0.000001
-    max_iter = 100
     txt_tolerancia.insert(0,str(tolerancia))
-    txt_max_iter.insert(0,str(max_iter))
     zero_matrix =np.zeros(4)
+
+    #Acciones botones
     def calcular_clic_event(event):
         try:
             a11 = int(txt_a11.get())
@@ -209,24 +230,34 @@ def generate_graphics():
             x3 = int(txt_x3.get())
             x4 = int(txt_x4.get())
             tolerancia = float(txt_tolerancia.get())
-            max_iter = int(txt_max_iter.get())
             A = np.array([
                 [a11, a12, a13, a14],
                 [a21, a22, a23, a24],
                 [a31, a32, a33, a34],
                 [a41, a42, a43, a44]])
             x = np.array([x1, x2, x3, x4])
-            b = gauss_seidel(A, x, zero_matrix, max_iter, tolerancia)
-
-            lbl_b1.configure(text=str(round(b[0],7)), state="normal")
-            lbl_b2.configure(text=str(round(b[1],7)), state="normal")
-            lbl_b3.configure(text=str(round(b[2],7)), state="normal")
-            lbl_b4.configure(text=str(round(b[3],7)), state="normal")
-            return
-        except ValueError as e:
+            matrix_comprobation, status, iter = gauss.matrix_validate(A)
+            if(matrix_comprobation == True):
+                b, iter = gauss.gauss_seidel(A, x, zero_matrix, tolerancia)
+            mood = StringVar()
+            aux_status = status + "\n Con ", iter , " iteraciones"
+            mood.set(aux_status)
+            if status == "Sistema válido":
+                lbl_b1.configure(text=str(round(b[0],7)), state="normal")
+                lbl_b2.configure(text=str(round(b[1],7)), state="normal")
+                lbl_b3.configure(text=str(round(b[2],7)), state="normal")
+                lbl_b4.configure(text=str(round(b[3],7)), state="normal")
+                lbl_status_resultado.configure(textvariable=mood)
+            else:
+                lbl_b1.configure(text="N/A", state="normal")
+                lbl_b2.configure(text="N/A", state="normal")
+                lbl_b3.configure(text="N/A", state="normal")
+                lbl_b4.configure(text="N/A", state="normal")
+                lbl_status_resultado.configure(textvariable=mood)
+                msg.showinfo("Estado de resultados", status)
+        except Exception as e:
             msg.showerror("Error", f"Error: {e.args[0]}")
             return
-
     def limpiar_clic_event(event):
         try:
             void_string = StringVar()
@@ -259,26 +290,276 @@ def generate_graphics():
         except Exception as e:
             msg.showerror("Error", f"Error: {e.args[0]}")
             return
+    def caso1_clic_event(event):
+        try:
+            a11_string = StringVar()
+            a11_string.set(str(A_caso1[0][0]))
+            a12_string = StringVar()
+            a12_string.set(str(A_caso1[0][1]))
+            a13_string = StringVar()
+            a13_string.set(str(A_caso1[0][2]))
+            a14_string = StringVar()
+            a14_string.set(str(A_caso1[0][3]))
+            a21_string = StringVar()
+            a21_string.set(str(A_caso1[1][0]))
+            a22_string = StringVar()
+            a22_string.set(str(A_caso1[1][1]))
+            a23_string = StringVar()
+            a23_string.set(str(A_caso1[1][2]))
+            a24_string = StringVar()
+            a24_string.set(str(A_caso1[1][3]))
+            a31_string = StringVar()
+            a31_string.set(str(A_caso1[2][0]))
+            a32_string = StringVar()
+            a32_string.set(str(A_caso1[2][1]))
+            a33_string = StringVar()
+            a33_string.set(str(A_caso1[2][2]))
+            a34_string = StringVar()
+            a34_string.set(str(A_caso1[2][3]))
+            a41_string = StringVar()
+            a41_string.set(str(A_caso1[3][0]))
+            a42_string = StringVar()
+            a42_string.set(str(A_caso1[3][1]))
+            a43_string = StringVar()
+            a43_string.set(str(A_caso1[3][2]))
+            a44_string = StringVar()
+            a44_string.set(str(A_caso1[3][3]))
+            x1_string = StringVar()
+            x1_string.set(str(b_caso1[0]))
+            x2_string = StringVar()
+            x2_string.set(str(b_caso1[1]))
+            x3_string = StringVar()
+            x3_string.set(str(b_caso1[2]))
+            x4_string = StringVar()
+            x4_string.set(str(b_caso1[3]))
+            txt_a11.configure(textvariable=a11_string)
+            txt_a12.configure(textvariable=a12_string)
+            txt_a13.configure(textvariable=a13_string)
+            txt_a14.configure(textvariable=a14_string)
+            txt_a21.configure(textvariable=a21_string)
+            txt_a22.configure(textvariable=a22_string)
+            txt_a23.configure(textvariable=a23_string)
+            txt_a24.configure(textvariable=a24_string)
+            txt_a31.configure(textvariable=a31_string)
+            txt_a32.configure(textvariable=a32_string)
+            txt_a33.configure(textvariable=a33_string)
+            txt_a34.configure(textvariable=a34_string)
+            txt_a41.configure(textvariable=a41_string)
+            txt_a42.configure(textvariable=a42_string)
+            txt_a43.configure(textvariable=a43_string)
+            txt_a44.configure(textvariable=a44_string)
+            txt_x1.configure(textvariable=x1_string)
+            txt_x2.configure(textvariable=x2_string)
+            txt_x3.configure(textvariable=x3_string)
+            txt_x4.configure(textvariable=x4_string)
+        except Exception as e:
+            msg.showerror("Error", f"Error: {e.args[0]}")
+            return
+    def caso2_clic_event(event):
+        try:
+            a11_string = StringVar()
+            a11_string.set(str(A_caso2[0][0]))
+            a12_string = StringVar()
+            a12_string.set(str(A_caso2[0][1]))
+            a13_string = StringVar()
+            a13_string.set(str(A_caso2[0][2]))
+            a14_string = StringVar()
+            a14_string.set(str(A_caso2[0][3]))
+            a21_string = StringVar()
+            a21_string.set(str(A_caso2[1][0]))
+            a22_string = StringVar()
+            a22_string.set(str(A_caso2[1][1]))
+            a23_string = StringVar()
+            a23_string.set(str(A_caso2[1][2]))
+            a24_string = StringVar()
+            a24_string.set(str(A_caso2[1][3]))
+            a31_string = StringVar()
+            a31_string.set(str(A_caso2[2][0]))
+            a32_string = StringVar()
+            a32_string.set(str(A_caso2[2][1]))
+            a33_string = StringVar()
+            a33_string.set(str(A_caso2[2][2]))
+            a34_string = StringVar()
+            a34_string.set(str(A_caso2[2][3]))
+            a41_string = StringVar()
+            a41_string.set(str(A_caso2[3][0]))
+            a42_string = StringVar()
+            a42_string.set(str(A_caso2[3][1]))
+            a43_string = StringVar()
+            a43_string.set(str(A_caso2[3][2]))
+            a44_string = StringVar()
+            a44_string.set(str(A_caso2[3][3]))
+            x1_string = StringVar()
+            x1_string.set(str(b_caso2[0]))
+            x2_string = StringVar()
+            x2_string.set(str(b_caso2[1]))
+            x3_string = StringVar()
+            x3_string.set(str(b_caso2[2]))
+            x4_string = StringVar()
+            x4_string.set(str(b_caso2[3]))
+            txt_a11.configure(textvariable=a11_string)
+            txt_a12.configure(textvariable=a12_string)
+            txt_a13.configure(textvariable=a13_string)
+            txt_a14.configure(textvariable=a14_string)
+            txt_a21.configure(textvariable=a21_string)
+            txt_a22.configure(textvariable=a22_string)
+            txt_a23.configure(textvariable=a23_string)
+            txt_a24.configure(textvariable=a24_string)
+            txt_a31.configure(textvariable=a31_string)
+            txt_a32.configure(textvariable=a32_string)
+            txt_a33.configure(textvariable=a33_string)
+            txt_a34.configure(textvariable=a34_string)
+            txt_a41.configure(textvariable=a41_string)
+            txt_a42.configure(textvariable=a42_string)
+            txt_a43.configure(textvariable=a43_string)
+            txt_a44.configure(textvariable=a44_string)
+            txt_x1.configure(textvariable=x1_string)
+            txt_x2.configure(textvariable=x2_string)
+            txt_x3.configure(textvariable=x3_string)
+            txt_x4.configure(textvariable=x4_string)
+        except Exception as e:
+            msg.showerror("Error", f"Error: {e.args[0]}")
+            return
+    def caso3_clic_event(event):
+        try:
+            a11_string = StringVar()
+            a11_string.set(str(A_caso3[0][0]))
+            a12_string = StringVar()
+            a12_string.set(str(A_caso3[0][1]))
+            a13_string = StringVar()
+            a13_string.set(str(A_caso3[0][2]))
+            a14_string = StringVar()
+            a14_string.set(str(A_caso3[0][3]))
+            a21_string = StringVar()
+            a21_string.set(str(A_caso3[1][0]))
+            a22_string = StringVar()
+            a22_string.set(str(A_caso3[1][1]))
+            a23_string = StringVar()
+            a23_string.set(str(A_caso3[1][2]))
+            a24_string = StringVar()
+            a24_string.set(str(A_caso3[1][3]))
+            a31_string = StringVar()
+            a31_string.set(str(A_caso3[2][0]))
+            a32_string = StringVar()
+            a32_string.set(str(A_caso3[2][1]))
+            a33_string = StringVar()
+            a33_string.set(str(A_caso3[2][2]))
+            a34_string = StringVar()
+            a34_string.set(str(A_caso3[2][3]))
+            a41_string = StringVar()
+            a41_string.set(str(A_caso3[3][0]))
+            a42_string = StringVar()
+            a42_string.set(str(A_caso3[3][1]))
+            a43_string = StringVar()
+            a43_string.set(str(A_caso3[3][2]))
+            a44_string = StringVar()
+            a44_string.set(str(A_caso3[3][3]))
+            x1_string = StringVar()
+            x1_string.set(str(b_caso3[0]))
+            x2_string = StringVar()
+            x2_string.set(str(b_caso3[1]))
+            x3_string = StringVar()
+            x3_string.set(str(b_caso3[2]))
+            x4_string = StringVar()
+            x4_string.set(str(b_caso3[3]))
+            txt_a11.configure(textvariable=a11_string)
+            txt_a12.configure(textvariable=a12_string)
+            txt_a13.configure(textvariable=a13_string)
+            txt_a14.configure(textvariable=a14_string)
+            txt_a21.configure(textvariable=a21_string)
+            txt_a22.configure(textvariable=a22_string)
+            txt_a23.configure(textvariable=a23_string)
+            txt_a24.configure(textvariable=a24_string)
+            txt_a31.configure(textvariable=a31_string)
+            txt_a32.configure(textvariable=a32_string)
+            txt_a33.configure(textvariable=a33_string)
+            txt_a34.configure(textvariable=a34_string)
+            txt_a41.configure(textvariable=a41_string)
+            txt_a42.configure(textvariable=a42_string)
+            txt_a43.configure(textvariable=a43_string)
+            txt_a44.configure(textvariable=a44_string)
+            txt_x1.configure(textvariable=x1_string)
+            txt_x2.configure(textvariable=x2_string)
+            txt_x3.configure(textvariable=x3_string)
+            txt_x4.configure(textvariable=x4_string)
+        except Exception as e:
+            msg.showerror("Error", f"Error: {e.args[0]}")
+            return
+    def caso4_clic_event(event):
+        try:
+            a11_string = StringVar()
+            a11_string.set(str(A_caso4[0][0]))
+            a12_string = StringVar()
+            a12_string.set(str(A_caso4[0][1]))
+            a13_string = StringVar()
+            a13_string.set(str(A_caso4[0][2]))
+            a14_string = StringVar()
+            a14_string.set(str(A_caso4[0][3]))
+            a21_string = StringVar()
+            a21_string.set(str(A_caso4[1][0]))
+            a22_string = StringVar()
+            a22_string.set(str(A_caso4[1][1]))
+            a23_string = StringVar()
+            a23_string.set(str(A_caso4[1][2]))
+            a24_string = StringVar()
+            a24_string.set(str(A_caso4[1][3]))
+            a31_string = StringVar()
+            a31_string.set(str(A_caso4[2][0]))
+            a32_string = StringVar()
+            a32_string.set(str(A_caso4[2][1]))
+            a33_string = StringVar()
+            a33_string.set(str(A_caso4[2][2]))
+            a34_string = StringVar()
+            a34_string.set(str(A_caso4[2][3]))
+            a41_string = StringVar()
+            a41_string.set(str(A_caso4[3][0]))
+            a42_string = StringVar()
+            a42_string.set(str(A_caso4[3][1]))
+            a43_string = StringVar()
+            a43_string.set(str(A_caso4[3][2]))
+            a44_string = StringVar()
+            a44_string.set(str(A_caso4[3][3]))
+            x1_string = StringVar()
+            x1_string.set(str(b_caso4[0]))
+            x2_string = StringVar()
+            x2_string.set(str(b_caso4[1]))
+            x3_string = StringVar()
+            x3_string.set(str(b_caso4[2]))
+            x4_string = StringVar()
+            x4_string.set(str(b_caso4[3]))
+            txt_a11.configure(textvariable=a11_string)
+            txt_a12.configure(textvariable=a12_string)
+            txt_a13.configure(textvariable=a13_string)
+            txt_a14.configure(textvariable=a14_string)
+            txt_a21.configure(textvariable=a21_string)
+            txt_a22.configure(textvariable=a22_string)
+            txt_a23.configure(textvariable=a23_string)
+            txt_a24.configure(textvariable=a24_string)
+            txt_a31.configure(textvariable=a31_string)
+            txt_a32.configure(textvariable=a32_string)
+            txt_a33.configure(textvariable=a33_string)
+            txt_a34.configure(textvariable=a34_string)
+            txt_a41.configure(textvariable=a41_string)
+            txt_a42.configure(textvariable=a42_string)
+            txt_a43.configure(textvariable=a43_string)
+            txt_a44.configure(textvariable=a44_string)
+            txt_x1.configure(textvariable=x1_string)
+            txt_x2.configure(textvariable=x2_string)
+            txt_x3.configure(textvariable=x3_string)
+            txt_x4.configure(textvariable=x4_string)
+        except Exception as e:
+            msg.showerror("Error", f"Error: {e.args[0]}")
+            return
     
+    ##Llamado botones
     btn_Calcular.bind('<Button-1>', calcular_clic_event)
     btn_Limpiar.bind('<Button-1>', limpiar_clic_event)
+    btn_Caso1.bind('<Button-1>', caso1_clic_event)
+    btn_Caso2.bind('<Button-1>', caso2_clic_event)
+    btn_Caso3.bind('<Button-1>', caso3_clic_event)
+    btn_Caso4.bind('<Button-1>', caso4_clic_event)
+
     window.mainloop()
-
-    return window
-
-def gauss_seidel(A, b, x0, max_iter, tol):
-    n = len(A)
-    x = x0.copy()
-    for i in range(max_iter):
-        x_new = np.zeros_like(x)
-        for j in range(n):
-            s1 = sum(-A[j][k] * x_new[k] for k in range(j))
-            s2 = sum(-A[j][k] * x[k] for k in range(j+1, n))
-            x_new[j] = (b[j] - s1 - s2) / A[j][j]
-        if np.allclose(x, x_new, rtol=tol):
-            return x_new
-        x = x_new
-    return x
 
 ##MAIN
 main()
