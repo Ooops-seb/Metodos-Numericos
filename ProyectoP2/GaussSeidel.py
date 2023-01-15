@@ -16,20 +16,22 @@ b_caso3 = np.array([1,2,3,4])
 A_caso4 = np.array([[1,2,3,4], [5,6,7,8], [9,10,11,12], [13,14,15,16]])
 b_caso4 = np.array([1,2,3,4])
 
-def matrix_validate(A):
+def matrix_validate(A, b):
     iter = 0
     n, m = A.shape
+    aux = np.zeros(4)
+    aux_X, iter = gauss_seidel(A, b, aux, 0.00001)
     if n != m:
         status = "Sistema no cuadrado"
         return False, status, iter
     diagonal_dominant = True
     for i in range(n):
         suma_no_diag = np.sum(np.abs(A[i, :i])) + np.sum(np.abs(A[i, i+1:]))
-        if np.abs(A[i, i]) <= suma_no_diag:
+        if np.abs(A[i, i]) <= suma_no_diag and np.array_equal(aux, aux_X):
             diagonal_dominant = False
+            status = "Sistema no diagonalmente dominante"
             break
     if not diagonal_dominant:
-        status = "Sistema no diagonalmente dominante"
         return False, status, iter
     if np.linalg.det(A) == 0:
         status = "Sistema con determinante 0"

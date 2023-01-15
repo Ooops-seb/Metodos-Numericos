@@ -161,10 +161,10 @@ def generate_graphics():
     lbl_tolerancia.place(x=11, y=15)
     lbl_status = tk.Label(Frm_Principal)
     lbl_status.configure(text="Status:", font=("Inter",10, "bold"), fg="black", bg="#F9FADC")
-    lbl_status.place(x=546, y=352)
+    lbl_status.place(x=487, y=340)
     lbl_status_resultado = tk.Label(Frm_Principal)
     lbl_status_resultado.configure(font=("Inter",10, "bold"), fg="black", bg="#F9FADC")
-    lbl_status_resultado.place(x=616, y=352)
+    lbl_status_resultado.place(x=540, y=340)
 
     #Botones
     btn_Calcular = tk.Button(Frm_Principal)
@@ -236,7 +236,7 @@ def generate_graphics():
                 [a31, a32, a33, a34],
                 [a41, a42, a43, a44]])
             x = np.array([x1, x2, x3, x4])
-            matrix_comprobation, status, iter = gauss.matrix_validate(A)
+            matrix_comprobation, status, iter = gauss.matrix_validate(A, x)
             if(matrix_comprobation == True):
                 b, iter = gauss.gauss_seidel(A, x, zero_matrix, tolerancia)
             mood = StringVar()
