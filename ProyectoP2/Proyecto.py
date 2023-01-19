@@ -1,9 +1,13 @@
 import tkinter as tk
 import tkinter.messagebox as msg
 from tkinter import *
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import pyautogui as screen
 import GaussSeidel as gauss
+import LaGrange as lagrange
+import string_control as control
 
 ##FUNCIONES DEL ARCHIVO
 def main():
@@ -23,9 +27,10 @@ def generate_graphics():
     window_pos_heigth = (height_screen/2) - (window_height/2)
     pos = str(int(window_width)) + "x" + str(int(window_height))+"+"+str(int(window_pos_width)) + "+" + str(int(window_pos_heigth))
     window.geometry(pos)
-    window.config(bg="black")
+    window.config(bg='#f9fadc')
 
-    #Frames
+    ##Frames
+    #Frame Gauss
     Frm_title = tk.Frame(window)
     Frm_title.configure(width=800, height=100, bg='#2B2823')
     Frm_title.place(x=0, y=0)
@@ -33,8 +38,10 @@ def generate_graphics():
     Frm_Menu.configure(width=800, height=25, bg="#205225")
     Frm_Menu.place(x=0, y=100)
     Frm_Principal = tk.Frame(window)
-    Frm_Principal.configure(width=800, height=500, bg='#f9fadc')
+    Frm_Principal.configure(width=800, height=475, bg='#f9fadc')
     Frm_Principal.place(x=0, y=125)
+    Frm_Principal_location = Frm_Principal.place_info()
+    Frm_Principal.place_forget()
     Frm_MatrizA = tk.Frame(Frm_Principal)
     Frm_MatrizA.configure(width=300, height=280 , bg='#8fa691')
     Frm_MatrizA.place(x=36, y=100)
@@ -47,9 +54,39 @@ def generate_graphics():
     Frm_Parametros = tk.Frame(Frm_Principal)
     Frm_Parametros.configure(width=200, height=45, bg="#FFFFFF")
     Frm_Parametros.place(x=540, y=44)
+    #Frame Interpolacion
+    Frm_Interpolacion = tk.Frame(window)
+    Frm_Interpolacion.configure(width=800, height=475, bg='#f9fadc')
+    Frm_Interpolacion.place(x=0, y=125)
+    Frm_Interpolacion_location = Frm_Interpolacion.place_info()
+    Frm_Interpolacion.place_forget()
+    Frm_x = tk.Frame(Frm_Interpolacion)
+    Frm_x.configure(width=50, height=40, bg="#CC3917")
+    Frm_x.place(x=98, y=87)
+    Frm_y = tk.Frame(Frm_Interpolacion)
+    Frm_y.configure(width=50, height=40, bg="#CC3917")
+    Frm_y.place(x=148, y=87)
+    Frm_dataX = tk.Frame(Frm_Interpolacion)
+    Frm_dataX.configure(width=50, height=190, bg="#8FA691")
+    Frm_dataX.place(x=98, y=126)
+    Frm_dataY = tk.Frame(Frm_Interpolacion)
+    Frm_dataY.configure(width=50, height=190, bg="#8FA691")
+    Frm_dataY.place(x=148, y=126)
+    Frm_canvas = tk.Frame(Frm_Interpolacion)
+    Frm_canvas.configure(width=400, height=400, bg="black")
+    Frm_canvas.place(x=316, y=47)
+
+    ##CANVAS
+    fig, graph = plt.subplots()
+    plt.xlabel("X axis")
+    plt.ylabel("Y axis")
+    plt.title("Lagrange Interpolation")
+    canvas = FigureCanvasTkAgg(fig, master=Frm_canvas)
+    canvas.draw()
+    canvas.get_tk_widget().configure(width=400, height=400)
+    canvas.get_tk_widget().place(x=0, y=0)
 
     #Matriz de coeficientes
-
     txt_a11 = tk.Entry(Frm_MatrizA)
     txt_a11.configure(font=("Inter",12), fg="black", bg="white")
     txt_a11.place(x=44, y=28, width=32, height=32)
@@ -117,6 +154,35 @@ def generate_graphics():
     txt_x4.configure(font=("Inter",12), fg="black", bg="white")
     txt_x4.place(x=9, y=208, width=32, height=32)
 
+    #Textbox Interpolacion
+    txt_data_X1 = tk.Entry(Frm_dataX)
+    txt_data_X1.configure(font=("Inter",8), fg="black", bg="white")
+    txt_data_X1.place(x=10, y=18, width=30, height=30)
+    txt_data_X2 = tk.Entry(Frm_dataX)
+    txt_data_X2.configure(font=("Inter",8), fg="black", bg="white")
+    txt_data_X2.place(x=10, y=60, width=30, height=30)
+    txt_data_X3 = tk.Entry(Frm_dataX)
+    txt_data_X3.configure(font=("Inter",8), fg="black", bg="white")
+    txt_data_X3.place(x=10, y=102, width=30, height=30)
+    txt_data_X4 = tk.Entry(Frm_dataX)
+    txt_data_X4.configure(font=("Inter",8), fg="black", bg="white")
+    txt_data_X4.place(x=10, y=144, width=30, height=30)
+    txt_data_Y1 = tk.Entry(Frm_dataY)
+    txt_data_Y1.configure(font=("Inter",8), fg="black", bg="white")
+    txt_data_Y1.place(x=10, y=18, width=30, height=30)
+    txt_data_Y2 = tk.Entry(Frm_dataY)
+    txt_data_Y2.configure(font=("Inter",8), fg="black", bg="white")
+    txt_data_Y2.place(x=10, y=60, width=30, height=30)
+    txt_data_Y3 = tk.Entry(Frm_dataY)
+    txt_data_Y3.configure(font=("Inter",8), fg="black", bg="white")
+    txt_data_Y3.place(x=10, y=102, width=30, height=30)
+    txt_data_Y4 = tk.Entry(Frm_dataY)
+    txt_data_Y4.configure(font=("Inter",8), fg="black", bg="white")
+    txt_data_Y4.place(x=10, y=144, width=30, height=30)
+    txt_xn = tk.Entry(Frm_Interpolacion)
+    txt_xn.configure(font=("Inter",8), fg="black", bg="white")
+    txt_xn.place(x=83, y=337, width=25, height=25)
+
     #Resultados
     lbl_b1 = tk.Label(Frm_Resultados)
     lbl_b1.configure(font=("Inter",8, "bold"), fg="white", bg="#cc3917", state="disabled")
@@ -165,6 +231,27 @@ def generate_graphics():
     lbl_status_resultado = tk.Label(Frm_Principal)
     lbl_status_resultado.configure(font=("Inter",10, "bold"), fg="black", bg="#F9FADC")
     lbl_status_resultado.place(x=540, y=340)
+    lbl_p4 = tk.Label(Frm_Interpolacion)
+    lbl_p4.configure(text="P(4):", font=("Inter",20, "bold"), fg="black", bg="#F9FADC")
+    lbl_p4.place(x=316, y=5)
+    lbl_modelo = tk.Label(Frm_Interpolacion)
+    lbl_modelo.configure(font=("Inter",10, "bold"), fg="black", bg="#F9FADC")
+    lbl_modelo.place(x=400, y=15)
+    lbl_x = tk.Label(Frm_x)
+    lbl_x.configure(text="X",font=("Inter",20, "bold"), fg="white", bg="#CC3917")
+    lbl_x.place(x=12, y=3)
+    lbl_y = tk.Label(Frm_y)
+    lbl_y.configure(text="Y",font=("Inter",20, "bold"), fg="white", bg="#CC3917")
+    lbl_y.place(x=12, y=3)
+    lbl_xn = tk.Label(Frm_Interpolacion)
+    lbl_xn.configure(text="Xn:", font=("Inter",10, "bold"), fg="black", bg="#F9FADC")
+    lbl_xn.place(x=47, y=342)
+    lbl_resultado_interpolador = tk.Label(Frm_Interpolacion)
+    lbl_resultado_interpolador.configure(text="Resultados:", font=("Inter",10, "bold"), fg="black", bg="#F9FADC")   
+    lbl_resultado_interpolador.place(x=135, y=342)
+    lbl_resultado_xn = tk.Label(Frm_Interpolacion)
+    lbl_resultado_xn.configure(font=("Inter",10, "normal"), fg="black", bg="#F9FADC")
+    lbl_resultado_xn.place(x=225, y=342)
 
     #Botones
     btn_Calcular = tk.Button(Frm_Principal)
@@ -191,6 +278,18 @@ def generate_graphics():
     btn_Caso4 = tk.Button(Frm_Principal)
     btn_Caso4.configure(text="Caso 4", font=("Inter",10, "bold"), fg="white", bg='#2b2823')
     btn_Caso4.place(x=241, y=12, width=67, height=23)
+    btn_Caso1_Interpolacion = tk.Button(Frm_Interpolacion)
+    btn_Caso1_Interpolacion.configure(text="Caso 1", font=("Inter",10, "bold"), fg="white", bg='#2b2823')
+    btn_Caso1_Interpolacion.place(x=13, y=12, width=67, height=23)
+    btn_Caso2_Interpolacion = tk.Button(Frm_Interpolacion)
+    btn_Caso2_Interpolacion.configure(text="Caso 2", font=("Inter",10, "bold"), fg="white", bg='#2b2823')
+    btn_Caso2_Interpolacion.place(x=89, y=12, width=67, height=23)
+    btn_Calcular_interpolacion = tk.Button(Frm_Interpolacion)
+    btn_Calcular_interpolacion.configure(text="Calcular", font=("Inter",15, "bold"), fg="white", bg='#2b2823')
+    btn_Calcular_interpolacion.place(x=98, y=377, width=100, height=30)
+    btn_Reset_interpolacion = tk.Button(Frm_Interpolacion)
+    btn_Reset_interpolacion.configure(text="Reset", font=("Inter",12, "bold"), fg="white", bg='#2b2823')
+    btn_Reset_interpolacion.place(x=110, y=422, width=75, height=25)
 
     #Iniciar funcionalidades
     A_caso1 = gauss.A_caso1
@@ -207,28 +306,36 @@ def generate_graphics():
     zero_matrix =np.zeros(4)
 
     #Acciones botones
+    def btn_gauss_clic_event(event):
+        Frm_Interpolacion.place_forget()
+        Frm_Principal.place(Frm_Principal_location)
+        return
+    def btn_interpolacion_clic_event(event):
+        Frm_Principal.place_forget()
+        Frm_Interpolacion.place(Frm_Interpolacion_location)
+        return
     def calcular_clic_event(event):
         try:
-            a11 = int(txt_a11.get())
-            a12 = int(txt_a12.get())
-            a13 = int(txt_a13.get())
-            a14 = int(txt_a14.get())
-            a21 = int(txt_a21.get())
-            a22 = int(txt_a22.get())
-            a23 = int(txt_a23.get())
-            a24 = int(txt_a24.get())
-            a31 = int(txt_a31.get())
-            a32 = int(txt_a32.get())
-            a33 = int(txt_a33.get())
-            a34 = int(txt_a34.get())
-            a41 = int(txt_a41.get())
-            a42 = int(txt_a42.get())
-            a43 = int(txt_a43.get())
-            a44 = int(txt_a44.get())
-            x1 = int(txt_x1.get())
-            x2 = int(txt_x2.get())
-            x3 = int(txt_x3.get())
-            x4 = int(txt_x4.get())
+            a11 = float(txt_a11.get())
+            a12 = float(txt_a12.get())
+            a13 = float(txt_a13.get())
+            a14 = float(txt_a14.get())
+            a21 = float(txt_a21.get())
+            a22 = float(txt_a22.get())
+            a23 = float(txt_a23.get())
+            a24 = float(txt_a24.get())
+            a31 = float(txt_a31.get())
+            a32 = float(txt_a32.get())
+            a33 = float(txt_a33.get())
+            a34 = float(txt_a34.get())
+            a41 = float(txt_a41.get())
+            a42 = float(txt_a42.get())
+            a43 = float(txt_a43.get())
+            a44 = float(txt_a44.get())
+            x1 = float(txt_x1.get())
+            x2 = float(txt_x2.get())
+            x3 = float(txt_x3.get())
+            x4 = float(txt_x4.get())
             tolerancia = float(txt_tolerancia.get())
             A = np.array([
                 [a11, a12, a13, a14],
@@ -551,6 +658,128 @@ def generate_graphics():
             msg.showerror("Error", f"Error: {e.args[0]}")
             return
     
+    def btn_caso1_interpolacion_clic_event(event):
+        try:
+            x_points = lagrange.points_caso1
+            y_values = lagrange.values_caso1
+            x1_string = StringVar()
+            x1_string.set(str(x_points[0]))
+            x2_string = StringVar()
+            x2_string.set(str(x_points[1]))
+            x3_string = StringVar()
+            x3_string.set(str(x_points[2]))
+            x4_string = StringVar()
+            x4_string.set(str(x_points[3]))
+            txt_data_X1.configure(textvariable=x1_string)
+            txt_data_X2.configure(textvariable=x2_string)
+            txt_data_X3.configure(textvariable=x3_string)
+            txt_data_X4.configure(textvariable=x4_string)
+            y1_string = StringVar()
+            y1_string.set(str(y_values[0]))
+            y2_string = StringVar()
+            y2_string.set(str(y_values[1]))
+            y3_string = StringVar()
+            y3_string.set(str(y_values[2]))
+            y4_string = StringVar()
+            y4_string.set(str(y_values[3]))
+            txt_data_Y1.configure(textvariable=y1_string)
+            txt_data_Y2.configure(textvariable=y2_string)
+            txt_data_Y3.configure(textvariable=y3_string)
+            txt_data_Y4.configure(textvariable=y4_string)
+            txt_xn.focus()
+        except Exception as e:
+            msg.showerror("Error", f"Error: {e.args[0]}")
+            return
+    def btn_caso2_interpolacion_clic_event(event):
+        try:
+            x_points = lagrange.points_caso2
+            y_values = lagrange.values_caso2
+            x1_string = StringVar()
+            x1_string.set(str(x_points[0]))
+            x2_string = StringVar()
+            x2_string.set(str(x_points[1]))
+            x3_string = StringVar()
+            x3_string.set(str(x_points[2]))
+            x4_string = StringVar()
+            x4_string.set(str(x_points[3]))
+            txt_data_X1.configure(textvariable=x1_string)
+            txt_data_X2.configure(textvariable=x2_string)
+            txt_data_X3.configure(textvariable=x3_string)
+            txt_data_X4.configure(textvariable=x4_string)
+            y1_string = StringVar()
+            y1_string.set(str(y_values[0]))
+            y2_string = StringVar()
+            y2_string.set(str(y_values[1]))
+            y3_string = StringVar()
+            y3_string.set(str(y_values[2]))
+            y4_string = StringVar()
+            y4_string.set(str(y_values[3]))
+            txt_data_Y1.configure(textvariable=y1_string)
+            txt_data_Y2.configure(textvariable=y2_string)
+            txt_data_Y3.configure(textvariable=y3_string)
+            txt_data_Y4.configure(textvariable=y4_string)
+            txt_xn.focus()
+        except Exception as e:
+            msg.showerror("Error", f"Error: {e.args[0]}")
+            return
+    def btn_calcular_interpolacion_clic_event(event):
+        try:
+            data_x1=float(txt_data_X1.get())
+            data_x2=float(txt_data_X2.get())
+            data_x3=float(txt_data_X3.get())
+            data_x4=float(txt_data_X4.get())
+            data_y1=float(txt_data_Y1.get())
+            data_y2=float(txt_data_Y2.get())
+            data_y3=float(txt_data_Y3.get())
+            data_y4=float(txt_data_Y4.get())
+            xn=float(txt_xn.get())
+            x_values = [data_x1, data_x2, data_x3, data_x4]
+            y_values = [data_y1, data_y2, data_y3, data_y4]
+            Px, P = lagrange.Lagrange_interpolation(x_values, y_values, xn)
+            respuesta_xn = StringVar()
+            respuesta_xn.set(str(round(Px, 6)))
+            lbl_resultado_xn.configure(textvariable=respuesta_xn)
+            respuesta_P = StringVar()
+            respuesta_P.set(str(P))
+            lbl_modelo.configure(textvariable=respuesta_P, state="normal")
+            x = x_values + [xn]
+            y = y_values + [Px]
+            max_x = max(x)
+            min_x = min(x)
+            max_y = max(y)
+            min_y = min(y)
+            plt.scatter(x, y, color='red', s=50, marker='x')
+            """""
+            P = P.replace("^", "**")
+            if(control.check_syntax(P)):
+                f = lambda x: eval(P)
+                x = np.linspace(-10, 10, num=1000)
+                y = f(x)
+                plt.plot(x, y)
+                plt.autoscale()
+            """
+            canvas.draw()
+        except Exception as e:
+            msg.showerror("Error", f"Error: {e.args[0]}")
+            return
+    def btn_reset_interpolacion_clic_event(event):
+        try:
+            void_string = StringVar()
+            void_string.set("")
+            txt_data_X1.configure(textvariable=void_string)
+            txt_data_X1.focus()
+            txt_data_X2.configure(textvariable=void_string)
+            txt_data_X3.configure(textvariable=void_string)
+            txt_data_X4.configure(textvariable=void_string)
+            txt_data_Y1.configure(textvariable=void_string)
+            txt_data_Y2.configure(textvariable=void_string)
+            txt_data_Y3.configure(textvariable=void_string)
+            txt_data_Y4.configure(textvariable=void_string)
+            txt_xn.configure(textvariable=void_string)
+            lbl_modelo.configure(textvariable=void_string, state="disabled")
+        except Exception as e:
+            msg.showerror("Error", f"Error: {e.args[0]}")
+            return
     ##Llamado botones
     btn_Calcular.bind('<Button-1>', calcular_clic_event)
     btn_Limpiar.bind('<Button-1>', limpiar_clic_event)
@@ -558,6 +787,12 @@ def generate_graphics():
     btn_Caso2.bind('<Button-1>', caso2_clic_event)
     btn_Caso3.bind('<Button-1>', caso3_clic_event)
     btn_Caso4.bind('<Button-1>', caso4_clic_event)
+    btn_Gauss.bind('<Button-1>', btn_gauss_clic_event)
+    btn_Interpolacion.bind('<Button-1>', btn_interpolacion_clic_event)
+    btn_Caso1_Interpolacion.bind('<Button-1>', btn_caso1_interpolacion_clic_event)
+    btn_Caso2_Interpolacion.bind('<Button-1>', btn_caso2_interpolacion_clic_event)
+    btn_Calcular_interpolacion.bind('<Button-1>', btn_calcular_interpolacion_clic_event)
+    btn_Reset_interpolacion.bind('<Button-1>', btn_reset_interpolacion_clic_event)
 
     window.mainloop()
 
